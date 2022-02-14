@@ -22,17 +22,10 @@ const row = (bill) => {
 
 const rows = (data) => {
 
-  data.forEach(item =>{
-    console.log(item.date, typeof(item.date))
-    item.date = new Date(Date.parse(item.date))
-    console.log("test", item.date, typeof(item.date))
-
-  })
-//KUNKANYA: Change type of Data.date from string to Date object
-  
-//  return (data && data.length) ? data.sort((a,b)=>{return new Date(b.date) - new Date(a.date)}).map(bill => row(bill)).join("") : ""
+//KUNKANYA: sort the date by adding new Date(b.date) -  new Date(a.date) to convert date string to date object
+//and return date from the earliest to the lastest
   return (data && data.length) ? data.sort((a,b)=>{
-  return new Date(b.date) - new Date(a.date)
+      return new Date(b.date) - new Date(a.date)
   }).map(bill => row(bill)).join("") : ""
 
 }

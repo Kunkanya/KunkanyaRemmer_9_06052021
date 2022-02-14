@@ -18,6 +18,7 @@ export default class NewBill {
   handleChangeFile = e => {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    console.log(file)
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
@@ -34,7 +35,6 @@ export default class NewBill {
         }
       })
       .then(({fileUrl, key}) => {
-        console.log(fileUrl)
         this.billId = key
         this.fileUrl = fileUrl
         this.fileName = fileName
@@ -57,6 +57,7 @@ export default class NewBill {
       fileName: this.fileName,
       status: 'pending'
     }
+    console.log(this.fileUrl)
     this.updateBill(bill)
     this.onNavigate(ROUTES_PATH['Bills'])
   }
