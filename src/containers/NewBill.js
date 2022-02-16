@@ -18,7 +18,10 @@ export default class NewBill {
   handleChangeFile = e => {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-    console.log(file)
+    //KUNKANYA: get file extension 
+    const fileExtension = file.name.split(".").pop()
+    console.log("fileExtension", fileExtension)
+       
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
@@ -26,7 +29,11 @@ export default class NewBill {
     formData.append('file', file)
     formData.append('email', email)
 
-    this.store
+ //KUNKANYA: check if the type of file is one of ".jpeg, .png, . jpg", 
+ //if not- return and set file.value =""
+ if(fileExtension.includes("jpeg")|| fileExtension.includes("jpg") || fileExtension.includes("png") ){
+      console.log("ok", this)
+      this.store
       .bills()
       .create({
         data: formData,
@@ -39,6 +46,12 @@ export default class NewBill {
         this.fileUrl = fileUrl
         this.fileName = fileName
       }).catch(error => console.error(error))
+
+    }else{
+      alert("only format Jpeg, pjg, png allowed")
+      document.querySelector(`input[data-testid="file"]`).value = ""
+      return
+    }
   }
   handleSubmit = e => {
     e.preventDefault()
