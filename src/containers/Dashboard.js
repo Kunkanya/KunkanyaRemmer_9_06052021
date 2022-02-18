@@ -85,28 +85,45 @@ export default class {
   }
 
   handleEditTicket(e, bill, bills) {
+    console.log("handelEdit", e)
+    console.log("%%%%%%%%%%%%%%> first counter", this.counter)
+    debugger
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
+  //  console.log(bill.id)
+  //  console.log("counter" ,this.counter)
+  //  console.log("%%%%%%%%%%%" )
     if (this.counter % 2 === 0) {
+      
+    //  console.log("========= option 1==========")
+    //  console.log("counter/2 ===0, ", this.counter)
+    //  console.log("Index", this.index)
+      debugger
       bills.forEach(b => {
-        $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
+      $(`#open-bill${b.id}`).css({ background: '#0D5AE5' }) 
       })
       $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
       $('.dashboard-right-container div').html(DashboardFormUI(bill))
       $('.vertical-navbar').css({ height: '150vh' })
-      this.counter ++
+      this.counter += 2
+      debugger
     } else {
+      console.log("========= option 2==========")
+      console.log("counter /2 ===0", this.counter)
+      console.log("Index", this.index)
+      debugger
       $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
 
       $('.dashboard-right-container div').html(`
         <div id="big-billed-icon"> ${BigBilledIcon} </div>
       `)
       $('.vertical-navbar').css({ height: '120vh' })
-      this.counter ++
+      this.counter += 2
     }
     $('#icon-eye-d').click(this.handleClickIconEye)
     $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))
     $('#btn-refuse-bill').click((e) => this.handleRefuseSubmit(e, bill))
+    debugger
   }
 
   handleAcceptSubmit = (e, bill) => {
@@ -130,14 +147,23 @@ export default class {
   }
 
   handleShowTickets(e, bills, index) {
+    console.log("before",e)
+    console.log("ini counter", this.counter)
+    debugger
     if (this.counter === undefined || this.index !== index) this.counter = 0
     if (this.index === undefined || this.index !== index) this.index = index
+    console.log(e, "index",this.index)
+    console.log("counter",this.counter)
+    const showBill = filteredBills(bills, getStatus(this.index))
+
     if (this.counter % 2 === 0) {
+      debugger  
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
       $(`#status-bills-container${this.index}`)
         .html(cards(filteredBills(bills, getStatus(this.index))))
       this.counter ++
     } else {
+      debugger
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
       $(`#status-bills-container${this.index}`)
         .html("")
@@ -145,8 +171,16 @@ export default class {
     }
 
     bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
-    })
+      //console.log(`#status-bills-container${this.index} #open-bill${bill.id}`)
+/*      $(`#status-bills-container${this.index} #open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+    })*/
+    debugger
+//    console.log( "optn1",$(`#open-bill${bill.id}`) )
+//    console.log( "optn2",$(`#status-bills-container${this.index} #open-bill${bill.id}`) )
+    
+    $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+    console.log(e)
+  })
 
     return bills
 
