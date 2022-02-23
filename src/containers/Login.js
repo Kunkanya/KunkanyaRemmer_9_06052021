@@ -34,14 +34,14 @@ export default class Login {
         PREVIOUS_LOCATION = this.PREVIOUS_LOCATION
         this.document.body.style.backgroundColor="#fff"
       })
-    
+
   }
 
   handleSubmitAdmin = e => {
     e.preventDefault()
     const user = {
       type: "Admin",
-      //--KUNKANYA-correction for the bug by changing (`input[data-testid="employee-email-input"]`) to (`input[data-testid="admin-email-input"]`)  
+      //Kunkanya : correction bug 1 from `input[data-testid="employee-email-input"]` to "admin" as following
       email: e.target.querySelector(`input[data-testid="admin-email-input"]`).value,
       password: e.target.querySelector(`input[data-testid="admin-password-input"]`).value,
       status: "connected"
@@ -93,4 +93,4 @@ export default class Login {
       return null
     }
   }
-} 
+}

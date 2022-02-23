@@ -3,14 +3,13 @@ import ErrorPage from "./ErrorPage.js"
 import LoadingPage from "./LoadingPage.js"
 
 import Actions from './Actions.js'
-import { formatDate } from '../app/format.js'
 
 const row = (bill) => {
   return (`
     <tr>
       <td>${bill.type}</td>
       <td>${bill.name}</td>
-      <td>${formatDate(bill.date)}</td>
+      <td>${bill.date}</td>
       <td>${bill.amount} €</td>
       <td>${bill.status}</td>
       <td>
@@ -21,18 +20,17 @@ const row = (bill) => {
   }
 
 const rows = (data) => {
+//Kunkanya: sort the date by converting date string to date object with (new Date) from the earliest to the lastest
+  return (data && data.length) ? data.sort((a,b) =>{
 
-//KUNKANYA: sort the date by adding new Date(b.date) -  new Date(a.date) to convert date string to date object
-//and return date from the earliest to the lastest
-  return (data && data.length) ? data.sort((a,b)=>{
-    
-      //return new Date(b.date) > new Date(a.date) ? 1: -1
-      return new Date(b.date) - new Date(a.date)
+    const aDate = new Date(a.date)
+    const bDate = new Date(b.date)
+    return bDate > aDate ? 1 :  -1
   }).map(bill => row(bill)).join("") : ""
-
 }
 
-  export default ({ data: bills, loading, error }) => {  
+export default ({ data: bills, loading, error }) => {
+  
   const modal = () => (`
     <div class="modal fade" id="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">

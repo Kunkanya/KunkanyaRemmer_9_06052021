@@ -5,7 +5,6 @@
 import LoginUI from "../views/LoginUI";
 import Login from "../containers/Login.js";
 import { ROUTES } from "../constants/routes";
-import BillsUI from "../views/BillsUI.js"
 import { fireEvent, screen } from "@testing-library/dom";
 
 describe("Given that I am a user on login page", () => {

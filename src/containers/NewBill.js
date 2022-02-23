@@ -18,10 +18,6 @@ export default class NewBill {
   handleChangeFile = e => {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-    //KUNKANYA: get file extension 
-    const fileExtension = file.name.split(".").pop()
-    console.log("fileExtension", fileExtension)
-       
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
@@ -29,11 +25,7 @@ export default class NewBill {
     formData.append('file', file)
     formData.append('email', email)
 
- //KUNKANYA: check if the type of file is one of ".jpeg, .png, . jpg", 
- //if not- return and set file.value =""
- if(fileExtension.includes("jpeg")|| fileExtension.includes("jpg") || fileExtension.includes("png") ){
-      console.log("ok", this)
-      this.store
+    this.store
       .bills()
       .create({
         data: formData,
@@ -42,16 +34,11 @@ export default class NewBill {
         }
       })
       .then(({fileUrl, key}) => {
+        console.log(fileUrl)
         this.billId = key
         this.fileUrl = fileUrl
         this.fileName = fileName
       }).catch(error => console.error(error))
-
-    }else{
-      alert("only format Jpeg, pjg, png allowed")
-      document.querySelector(`input[data-testid="file"]`).value = ""
-      return
-    }
   }
   handleSubmit = e => {
     e.preventDefault()
@@ -62,7 +49,7 @@ export default class NewBill {
       type: e.target.querySelector(`select[data-testid="expense-type"]`).value,
       name:  e.target.querySelector(`input[data-testid="expense-name"]`).value,
       amount: parseInt(e.target.querySelector(`input[data-testid="amount"]`).value),
-      date: e.target.querySelector(`input[data-testid="datepicker"]`).value,
+      date:  e.target.querySelector(`input[data-testid="datepicker"]`).value,
       vat: e.target.querySelector(`input[data-testid="vat"]`).value,
       pct: parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) || 20,
       commentary: e.target.querySelector(`textarea[data-testid="commentary"]`).value,
@@ -70,7 +57,6 @@ export default class NewBill {
       fileName: this.fileName,
       status: 'pending'
     }
-    console.log(this.fileUrl)
     this.updateBill(bill)
     this.onNavigate(ROUTES_PATH['Bills'])
   }
