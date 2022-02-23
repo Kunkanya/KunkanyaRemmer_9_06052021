@@ -25,6 +25,8 @@ const rows = (data) => {
 //KUNKANYA: sort the date by adding new Date(b.date) -  new Date(a.date) to convert date string to date object
 //and return date from the earliest to the lastest
   return (data && data.length) ? data.sort((a,b)=>{
+    
+      //return new Date(b.date) > new Date(a.date) ? 1: -1
       return new Date(b.date) - new Date(a.date)
   }).map(bill => row(bill)).join("") : ""
 
