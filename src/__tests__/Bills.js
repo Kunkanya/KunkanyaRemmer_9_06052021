@@ -3,10 +3,10 @@
  */
 
 import {screen, waitFor} from "@testing-library/dom"
-import {toHaveClass} from "@testing-library/jest-dom"
+import {toHaveClass, toBeInTheDocument} from "@testing-library/jest-dom"
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
-import { ROUTES_PATH} from "../constants/routes.js";
+import {ROUTES, ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
 
 import router from "../app/Router.js";
@@ -15,7 +15,8 @@ describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
 
-      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      Object.defineProperty(window, 'localStorage', { 
+        value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
       }))
@@ -37,5 +38,16 @@ describe("Given I am connected as an employee", () => {
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
     })
+
+    //Kunkanya add test for button "Nouvelle note de frais"
+    test("the button new bill should be visible", () =>{
+      document.body.innerHTML = BillsUI({data: bills})
+      const newBillButton = screen.getByTestId("btn-new-bill")
+      expect(newBillButton).toBeTruthy()
+    })
+
+  
+      
+
   })
 })
