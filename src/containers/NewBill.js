@@ -18,9 +18,8 @@ export default class NewBill {
   handleChangeFile = e => {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+
     const filePath = e.target.value.split(/\\/g)
-    console.log(file)
-    console.log(filePath)
     const fileName = filePath[filePath.length-1]
 
     //Kunkanya : check file extension
