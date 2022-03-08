@@ -21,6 +21,7 @@ describe("Given I am connected as an employee", () => {
     test("Then it should render newbill page", () => {
       const html = NewBillUI()
       document.body.innerHTML = html
+      screen.debug()
       //to-do write assertion
       //Kunkanya
         expect(screen.getAllByText('Envoyer une note de frais')).toBeTruthy()
@@ -33,8 +34,9 @@ describe("Given I am connected as an employee", () => {
         expect(screen.getByTestId('pct')).toBeTruthy()
         expect(screen.getByTestId('commentary')).toBeTruthy()
         expect(screen.getByTestId('file')).toBeTruthy()
-    })
-  
+        expect(screen.getByTestId('errorMessageFile').innerHTML).toEqual('')
+   
+      })
 
     test('Then mail icon in vertical layout should be highlighted', async()=>{
       Object.defineProperty(window, 'localStorage', { 
@@ -65,52 +67,74 @@ describe("Given I am connected as an employee", () => {
 
 
     describe('When I am on NewBill Page and click button change file',()=>{
-    test('the function handleChangeFile should have been called',async ()=>{
-      //to mock alert function in window
-      global.alert = jest.fn();
-      const html =  NewBillUI({})
-      document.body.innerHTML =  html
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
-      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee'
-      }))
-      const store = null
-      const newBill = new NewBill({document, onNavigate, store, localStorage: window.localStorage
-      })
 
-      const fileName = "1.jpg"
-      const handleChangeFile = jest.fn(newBill.handleChangeFile)
-      const btnFile = screen.getByTestId('file')
-      btnFile.addEventListener('change', handleChangeFile)
-      fireEvent.change(btnFile,{targer : {value:[fileName]}})
-      await expect(handleChangeFile).toHaveBeenCalledTimes(1)
+    describe('when I put the correct file type (jpeg, jpg, png)',() => {
+      test('file name should appear', async ()=>{
+        global.alert = jest.fn();
+        const fileData = {
+          file : 'image.jpeg',
+          type : 'image/jpeg'
+        }
+        const errMessage ="Seuls les formats de fichiers (jpg, jpeg, png) sont autorisés"
+        const html =  NewBillUI({})
+        document.body.innerHTML =  html
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = ROUTES({ pathname })
+        }
+        Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+        window.localStorage.setItem('user', JSON.stringify({
+          type: 'Employee'
+        }))
+        const store = null
+        const newBill = new NewBill({document, onNavigate, store, localStorage: window.localStorage
+        })
+  
+        const handleChangeFile = jest.fn(newBill.handleChangeFile)
+        const inputFile = screen.getByTestId('file')
+        inputFile.addEventListener('change', handleChangeFile)
+  
+        fireEvent.change(inputFile, {target: {files :
+                    [new File(["newFile"], fileData.file, { type: fileData.type })],
+                  }})
+        await expect(handleChangeFile).toHaveBeenCalled()
+        await expect(screen.getByTestId('errorMessageFile').innerHTML).toEqual('')
+        await expect(inputFile.files[0].name).toBe(fileData.file)              
+      })  
     })
-    test('file name should appear after click change file button', async()=>{
-      global.alert = jest.fn();
-      const html =  NewBillUI({})
-      document.body.innerHTML =  html
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
-      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee'
-      }))
-      const store = null
-      const newBill = new NewBill({document, onNavigate, store, localStorage: window.localStorage
-      })
-
-      const fileName = "1.jpg"
-      const handleChangeFile = jest.fn(newBill.handleChangeFile)
-      const btnFile = screen.getByTestId('file')
-      
-      btnFile.addEventListener('change', handleChangeFile)
-      await fireEvent.change(btnFile,{targer : {value:[fileName]}})
-       expect(screen.getByTestId('file').fileName.value).toBe(fileName)
+ 
+    describe('when I put the incorrect file type (ex: txt)',() => {
+      test('the error message should appear', async ()=>{
+        global.alert = jest.fn();
+        const fileData = {
+          file : 'text.txt',
+          type : 'text/txt'
+        }
+        const errMessage ="Seuls les formats de fichiers (jpg, jpeg, png) sont autorisés"
+        const html =  NewBillUI({})
+        document.body.innerHTML =  html
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = ROUTES({ pathname })
+        }
+        Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+        window.localStorage.setItem('user', JSON.stringify({
+          type: 'Employee'
+        }))
+        const store = null
+        const newBill = new NewBill({document, onNavigate, store, localStorage: window.localStorage
+        })
+  
+        const handleChangeFile = jest.fn(newBill.handleChangeFile)
+        const inputFile = screen.getByTestId('file')
+        inputFile.addEventListener('change', handleChangeFile)
+  
+        fireEvent.change(inputFile, {target: {files :
+                    [new File(["newFile"], fileData.file, { type: fileData.type })],
+        }})  
+        await expect(handleChangeFile).toHaveBeenCalledTimes(1)
+        await expect(screen.getByTestId('errorMessageFile').innerText).toBe(errMessage)
+      })  
     })
+ 
   })
 
 

@@ -18,21 +18,24 @@ export default class NewBill {
   handleChangeFile = e => {
     e.preventDefault()
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
 
     //Kunkanya : check file extension
     const fileExtension = fileName.split(".").pop()
     const allowedExtentions = ['jpeg', 'jpg', 'png']
-
+    const fileError = this.document.querySelector('#fileErrorMessage')
+    const errMessage = "Seuls les formats de fichiers (jpg, jpeg, png) sont autorisés"
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
     formData.append('file', file)
     formData.append('email', email)
 
+    
+
     //Kunkanya : add condition check if the fileextension is allowed.
     if(allowedExtentions.includes(fileExtension)){
+      fileError.innerHTML = ""       
       this.store
       .bills()
       .create({
@@ -47,15 +50,16 @@ export default class NewBill {
         this.fileName = fileName
       }).catch(error => console.error(error))
     }else{
-      alert("only .jpeg, .jpg or .png are allowed")
+      //Kunkanya: show error message when the selected file is not allowed
+      fileError.innerText= errMessage
       this.document.querySelector(`input[data-testid="file"]`).value=""
-            return
+      return
     }
     
   }
   handleSubmit = e => {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
+//    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,
@@ -70,7 +74,7 @@ export default class NewBill {
       fileName: this.fileName,
       status: 'pending'
     }
-    console.log(this.filename)
+  //  console.log(this.filename)
     this.updateBill(bill)
     this.onNavigate(ROUTES_PATH['Bills'])
   }
