@@ -1,3 +1,5 @@
+import { bills } from "../fixtures/bills"
+
 const mockedBills = {
   list() {
     return Promise.resolve([{
@@ -82,7 +84,14 @@ const mockedBills = {
       "pct": 20
     })
   },
+  /*Kunkanya add post method
+  post(newBill){
+    bills.push(newBill)
+    console.log("store", bills)
+    return  Promise.resolve(bills.list)
+  }*/
 }
+
 
 export default {
   bills() {

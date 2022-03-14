@@ -3,25 +3,24 @@
  */
 
 import { fireEvent, waitFor, screen } from "@testing-library/dom"
-import userEvent from "@testing-library/user-event";
 import {toHaveClass, toBeInTheDocument, toHaveTextContent} from "@testing-library/jest-dom"
+import BillsUI from "../views/BillsUI.js";
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
-import { bills } from "../fixtures/bills.js"
-import router from "../app/Router.js";
 import {ROUTES, ROUTES_PATH} from "../constants/routes.js";
-
 import {localStorageMock} from "../__mocks__/localStorage.js";
-import mockStore from "../__mocks__/store.js"
+import mockStore from "../__mocks__/store"
+import router from "../app/Router.js";
+import { bills } from "../fixtures/bills.js";
 
-//jest.mock("../app/store", () => mockStore)
+
+jest.mock("../app/store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
     test("Then it should render newbill page", () => {
       const html = NewBillUI()
       document.body.innerHTML = html
-      screen.debug()
       //to-do write assertion
       //Kunkanya
         expect(screen.getAllByText('Envoyer une note de frais')).toBeTruthy()
@@ -175,15 +174,18 @@ describe("Given I am connected as an employee", () => {
       const newBill = new NewBill({ document, onNavigate, store, localStorage: window.localStorage });
   
       const bill = {
-          //email,
-          type: "Services en ligne",
-          name: "John Doe",
-          amount: parseInt(1000),
-          date: "2022-08-03",
-          vat: "20",
-          pct: parseInt(10),
-          fileName: "Image.jpeg",
-          status: "pending",
+          "id": "47qAXb6fIm2zOKkLzMro",
+          "vat": "80",
+          "fileUrl": "https://firebasestorage.googleapis.com/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a",
+          "status": "pending",
+          "type": "Hôtel et logement",
+          "commentary": "Test bill",
+          "name": "encore",
+          "fileName": "preview-facture-free-201801-pdf-1.jpg",
+          "date": "2004-04-04",
+          "amount": 1400,
+          "email": "a@a",
+          "pct": 20,
       };
 
       const btnSubmit = screen.getByTestId("form-new-bill")
@@ -201,10 +203,103 @@ describe("Given I am connected as an employee", () => {
       fireEvent.submit(btnSubmit);
   
       expect(handleSubmit).toHaveBeenCalled();
-
       const billPage = screen.getByText(/mes notes de frais/i)
       expect(billPage).toBeTruthy()
 
+      
     })
   })  
+})
+
+// test d'intégration POST
+describe("Given I am a user connected as Employee", () => {
+  describe("When I navigate to NewBill", () => {
+    test("it should render NewBill elements", async () => {
+      localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }));
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+      window.onNavigate(ROUTES_PATH.NewBill)
+      await waitFor(() => screen.getByText("Envoyer une note de frais"))
+      const contentType  = await screen.getByText("Type de dépense")
+      expect(contentType).toBeTruthy()
+      const contentHeader  = await screen.getByText("Envoyer une note de frais")
+      expect(contentHeader).toBeTruthy()
+      expect(screen.getByTestId("form-new-bill")).toBeTruthy()
+    })
+  })
+  test("post bill to mock API", async () => {
+    const html = NewBillUI({});
+    document.body.innerHTML = html;
+    const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+    };
+    const store = mockStore;
+    const newBill = new NewBill({ document, onNavigate, store, localStorage: window.localStorage });
+    //Kunkanya : create new bill for the test
+    const newbillData = {
+      "id": "123456789",
+      "vat": "80",
+      "fileUrl": "https://firebasestorage.googleapis.com/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a",
+      "status": "pending",
+      "type": "Hôtel et logement",
+      "commentary": "séminaire billed",
+      "name": "encore",
+      "fileName": "preview-facture-free-201801-pdf-1.jpg",
+      "date": "2004-04-04",
+      "amount": 400,
+      "commentAdmin": "newBill post data",
+      "email": "a@a",
+      "pct": 20
+  };
+  const getSpy = jest.spyOn(mockStore, "bills")
+  const bill = await mockStore.bills().update(newbillData)
+  console.log("bill", bill)
+  expect(getSpy).toHaveBeenCalledTimes(1)
+  expect(bill.status).toBe('pending')
+//  expect(bill.id).toBe('47qAXb6fIm2zOKkLzMro')
+
+ // const post = await mockStore.bills().post(newbillData)
+  //console.log(post)
+ // expect(post.length).toEqual(5)
+const tesz = await mockStore.bills.mockImplementationOnce(() => {
+  return {
+    create : () =>  {
+      bills().list.push(newBillData)
+      console.log(bills)
+      return Promise.resolve (bills.list)
+    }
+  }})
+
+
+
+})
+
+describe("When an error occurs on API", () => {
+  test("fetches bills from an API and fails with 404 message error", async () => {
+    jest.spyOn(mockStore, "bills")
+    mockStore.bills.mockImplementationOnce(() => {
+        return {
+          create : () =>  {
+            return Promise.reject(new Error("Erreur 404"))
+          }
+        }})
+      document.body.innerHTML = BillsUI({error : "Erreur 404"})
+      const message = await screen.getByText(/Erreur 404/)
+      expect(message).toBeTruthy()
+    }) 
+
+    test("fetches bills from an API and fails with 500 message error", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          create : () =>  {
+            return Promise.reject(new Error("Erreur 500"))
+          }
+        }})
+      document.body.innerHTML = BillsUI({error : "Erreur 500"})
+      const message = await screen.getByText(/Erreur 500/)
+      expect(message).toBeTruthy()
+    })
+  })
 })
