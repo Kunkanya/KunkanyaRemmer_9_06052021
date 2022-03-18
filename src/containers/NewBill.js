@@ -22,7 +22,8 @@ export default class NewBill {
     const fileName = filePath[filePath.length-1]
 
     //Kunkanya : check file extension
-    const fileExtension = fileName.split(".").pop()
+    const fileExtension = fileName.split(".").pop() 
+    //console.log(fileExtension)
     const allowedExtentions = ['jpeg', 'jpg', 'png']
     const fileError = this.document.querySelector('#fileErrorMessage')
     const errMessage = "Seuls les formats de fichiers (jpg, jpeg, png) sont autorisés"
@@ -30,10 +31,7 @@ export default class NewBill {
     const email = JSON.parse(localStorage.getItem("user")).email
     formData.append('file', file)
     formData.append('email', email)
-
-    
-
-    //Kunkanya : add condition check if the fileextension is allowed.
+    //Kunkanya : add condition check if the fileExtension is allowed.
     if(allowedExtentions.includes(fileExtension)){
       fileError.innerHTML = ""       
       this.store

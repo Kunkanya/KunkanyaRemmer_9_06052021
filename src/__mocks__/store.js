@@ -67,7 +67,7 @@ const mockedBills = {
   create(bill) {
     return Promise.resolve({fileUrl: 'https://localhost:3456/images/test.jpg', key: '1234'})
   },
-  update(bill) {
+ /* update(bill) {
     return Promise.resolve({
       "id": "47qAXb6fIm2zOKkLzMro",
       "vat": "80",
@@ -83,13 +83,26 @@ const mockedBills = {
       "email": "a@a",
       "pct": 20
     })
+  },*/
+  //Kunkanya : change method" update for testing POST.
+  update(bill) {
+    return Promise.resolve({
+      "id": bill.id,
+      "vat": bill.vat,
+      "fileUrl": bill.fileUrl,
+      "status": bill.status,
+      "type": bill.type,
+      "commentary": bill.commentary,
+      "name": bill.name,
+      "fileName": bill.fileName,
+      "date": bill.date,
+      "amount": bill.amount,
+      "commentAdmin": bill.commentAdmin,
+      "email": bill.email,
+      "pct": bill.pct
+    })
   },
-  /*Kunkanya add post method
-  post(newBill){
-    bills.push(newBill)
-    console.log("store", bills)
-    return  Promise.resolve(bills.list)
-  }*/
+
 }
 
 

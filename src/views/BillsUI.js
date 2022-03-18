@@ -20,7 +20,8 @@ const row = (bill) => {
   }
 
 const rows = (data) => {
-//Kunkanya: sort the date by converting date string to date object with (new Date) from the earliest to the lastest
+//Kunkanya: sort the date by converting date string to date object
+// with (new Date) from the earliest to the lastest
   return (data && data.length) ? data.sort((a,b) =>{
 
     const aDate = new Date(a.date)

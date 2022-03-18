@@ -52,7 +52,7 @@ describe("Given I am connected as an employee", () => {
       const newBillButton = screen.getByTestId("btn-new-bill")
       expect(newBillButton).toBeTruthy()
     })
-    test('Mes notes de frais should be on the page', ()=>{
+    test('[Mes notes de frais] should be on the page', ()=>{
       document.body.innerHTML = BillsUI({data: bills})
       const title = screen.getByText('Mes notes de frais')
       expect(title).toBeVisible()
@@ -81,7 +81,7 @@ describe("Given I am connected as an employee", () => {
   })
 
  describe('when i click on the icon eye', ()=>{
-    test('the event handleClickIconEye should been called', () =>{
+    test('the event handleClickIconEye should has been called', () =>{
       //Kunkanya : .modal is bootstrap so we have to mock this function
       $.fn.modal = jest.fn(() => $());
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
@@ -175,7 +175,6 @@ describe("Given I am a user connected as Employee", () => {
       router()
     })
     test("fetches bills from an API and fails with 404 message error", async () => {
-
       mockStore.bills.mockImplementationOnce(() => {
         return {
           list : () =>  {

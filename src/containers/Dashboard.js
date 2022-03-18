@@ -155,7 +155,7 @@ export default class {
       console.log("bill-id 0", $(  `#status-bills-container${this.index}`))
       console.log("bill-id 1", $(  `#status-bills-container${this.index} #open-bill${bill.id}`))
       console.log("bill-id 2", $(  `#open-bill${bill.id}`))
-      //Kunkanya :  add #status-bills-container${this.index} to show the previous object be 
+      //Kunkanya :  add #status-bills-container${this.index} to indicate that this bill is on which container 
       $( `#status-bills-container${this.index} #open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
     })
 
