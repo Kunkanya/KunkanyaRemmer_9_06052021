@@ -134,7 +134,6 @@ export default class {
   }
 
   handleShowTickets(e, bills, index) {
-    console.log(index)
     if (this.counter === undefined || this.index !== index) this.counter = 0
     if (this.index === undefined || this.index !== index) this.index = index
     const activeBills = filteredBills(bills, getStatus(this.index)) 
@@ -150,11 +149,7 @@ export default class {
         .html("")
       this.counter ++
     }
-
     bills.forEach(bill => {
-      console.log("bill-id 0", $(  `#status-bills-container${this.index}`))
-      console.log("bill-id 1", $(  `#status-bills-container${this.index} #open-bill${bill.id}`))
-      console.log("bill-id 2", $(  `#open-bill${bill.id}`))
       //Kunkanya :  add #status-bills-container${this.index} to indicate that this bill is on which container 
       $( `#status-bills-container${this.index} #open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
     })
